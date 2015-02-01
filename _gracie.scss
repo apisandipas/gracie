@@ -48,6 +48,7 @@ $grid-gutter-width: 30px !default;
 $grid-classes: true !default;
 $grid-enable-border-box: true !default;
 
+
 $grid-breakpoints: (
     small  : (min-width: 20em),
     medium : (min-width: 48em),
@@ -70,20 +71,20 @@ $grid-breakpoints: (
     }
 }
 
-// this is a common mixin name, so lets not collide, if it's already been defined.
-// Sass namespaces? yes please.
-// @if (mixin-exists(clearfix)) {
-    @mixin clearfix() {
-        &:before,
-        &:after {
-            content: "";
-            display:table;
-        }
-        &:after {
-            clear:both;
-        }
+
+// Clearfix mixin
+// @access public
+@mixin clearfix() {
+    &:before,
+    &:after {
+        content: "";
+        display:table;
     }
-// }
+    &:after {
+        clear:both;
+    }
+}
+
 
 // Responsive manager.
 // @access public

@@ -1,0 +1,32 @@
+@import 'normalize';
+@import '../gracie';
+
+body {
+    background: #222;
+}
+
+.site-container { @include make-container; }
+
+ header {
+    @include make-row;
+
+    .logo {
+        @include make-columns(12);
+    }
+    
+    .menu {
+        @include make-columns(12);
+    } 
+
+
+    @include respond-to(medium) {
+        .logo {
+            @include make-columns(4);
+        }
+        
+        .menu {
+            @include make-columns(6);
+        }
+    }
+
+ }
