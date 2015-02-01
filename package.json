@@ -1,0 +1,10 @@
+{
+  "name": "gracie",
+  "description": "a graceful  mixin-based SCSS grid library",
+  "version": "1.0.0",
+  "license": "MIT",
+  "main": "index.js",
+  "scripts": {
+    "sass": "sass ./demo/style.scss ./demo/style.css"
+  }
+}

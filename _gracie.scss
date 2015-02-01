@@ -1,0 +1,189 @@
+/*!
+ * A minimal grid system inspired by the Bootstrap grid 
+ * and this article that really sold me on it's power:
+ *      
+ *      http://www.helloerik.com/the-subtle-magic-behind-why-the-bootstrap-3-grid-works
+ *
+ * Focused on modern browsers, or for use for auto-prefixers. 
+ * 
+ * Gracie v1.0.0 - a graceful mixin-based SCSS grid library
+ * Copyright 2015 Bryan Paronto
+ * Licensed under MIT  
+ */
+
+/**
+ * TODO:  Implement Push and Pull classes !
+ */
+
+/**
+ *  Example usage for generating "sematic" grid elements.
+ *  
+ *  <div class="wrapper">
+ *      <header class="header">
+ *          <div class="logo"><img src="logo.png"/></div>
+ *          <div class="menu"><nav>...</nav></div>
+ *      </header>
+ *  </div>
+ *  
+ * .wrapper { @include make-container; }
+ * 
+ * .header {
+ *       @include make-row;
+ *
+ *        .logo { @include make-columns(12); }
+ *        .menu { @include make-columns(12); } 
+ *
+ *       @include respond-to(medium) {
+ *            .logo { @include make-columns(4); }
+ *            .menu { @include make-columns(6); }
+ *       }
+ *
+ *  }
+ *
+ */
+
+$grid-max-width: 71.250em !default;
+$grid-columns: 12 !default;
+$grid-gutter-width: 30px !default;
+$grid-classes: true !default;
+$grid-enable-border-box: true !default;
+
+$grid-breakpoints: (
+    small  : (min-width: 20em),
+    medium : (min-width: 48em),
+    large  : (min-width: 64em),
+    huge   : (min-width: 75em),
+) !default;
+
+
+
+//  Gracie requires the use of box-sizing: border-box, 
+//  which is a best practice these days anyways.
+//  
+//  See: http://www.paulirish.com/2012/box-sizing-border-box-ftw/
+//  
+//  If you don't have box sizing enable's elsewhere in your SCSS-stack,  
+//  set $grid-enable-border-box to true to enable it.
+@if $grid-enable-border-box {
+    *, *:before, *:after {
+        box-sizing: border-box;
+    }
+}
+
+// this is a common mixin name, so lets not collide, if it's already been defined.
+// Sass namespaces? yes please.
+// @if (mixin-exists(clearfix)) {
+    @mixin clearfix() {
+        &:before,
+        &:after {
+            content: "";
+            display:table;
+        }
+        &:after {
+            clear:both;
+        }
+    }
+// }
+
+// Responsive manager.
+// @access public
+// @param {String} $breakpoint - Breakpoint
+// @requires $grid-breakpoints
+@mixin respond-to($breakpoint) {
+    @if map-has-key($grid-breakpoints, $breakpoint) {
+        @media #{inspect(map-get($grid-breakpoints, $breakpoint))} {
+            @content;
+        }
+    }
+
+    @else {
+        @error "No value found for `#{$breakpoint}`. "
+            + "Please make sure it is defined in `$grid-breakpoints` map.";
+    }
+}
+
+// Make a container component
+// @access public
+// @param {Number} $gutter - Width of the gutter between columns, default: grid-gutter-width
+// @param {Number} $max-width - Max width of the grid default: $grid-max-width
+// @requires $grid-gutter-width, $grid-max-width
+// @required clearfix;
+@mixin make-container($gutter: $grid-gutter-width, $max-width: $grid-max-width) {
+    margin-right: auto;
+    margin-left: auto;
+    padding-left:  ($gutter / 2);
+    padding-right: ($gutter / 2);
+    max-width: $max-width;
+    @include clearfix;
+}
+
+// Make a row component
+// @access public
+// @param {Number} $gutter - Width of the gutter between columns, default: grid-gutter-width
+// @requires $grid-gutter-width 
+// @required clearfix;
+@mixin make-row($gutter: $grid-gutter-width) {
+    margin-left:  ($gutter / -2);
+    margin-right: ($gutter / -2);
+    @include clearfix;
+}
+
+// Make a column component
+// @access public
+// @param {Number} $span - Number of columns across a column component will span, default: 1
+// @param {Number} $gutter - Width of the gutter between columns, default: grid-gutter-width
+// @requires $grid-gutter-width, $grid-columns
+@mixin make-columns($span: 1, $gutter: $grid-gutter-width) {
+    width: 100% / $grid-columns * $span;
+    float: left;
+    display: inline-block;
+    padding: 0 ($grid-gutter-width / 2) 0;
+}
+
+// Generate the grid classes for each break point
+// @access private
+// @param {String} $interfix - name of breakpoint for grid class 
+// @requires $grid-columns
+// @requires make-columns
+@mixin make-grid( $interfix ) {
+    @for $i from 1 through $grid-columns {
+        .col-#{$interfix}-#{$i} {
+            @include make-columns($i);
+        }
+    }
+}
+
+// Gracie is focused on building sematic grid via mixins, but if you wish to generate grid classes
+// ala Bootstrap, set $grid-classes to true.
+//  
+//      Generated class names will follow the following convention
+//      
+//      .col-#{$breakpoint}-#{$span}
+//       
+//      .col-small-6;   This component will span 6 columns from 20ems up
+//      .col-medium-12; This component will span 12 columns from 48ems up
+// 
+// 
+/**
+ *  Example usage for generating non-sematic grid elements.
+ *  
+ *   <div class="wrapper container">
+ *      <header class="row">
+ *          <div class="logo col-medium-4"><img src="logo.png"/></div>
+ *          <div class="menu col-medium-6"><nav>...</nav></div>
+ *      </header>
+ *  </div>
+
+ */
+@if $grid-classes {
+
+    .container { @include make-container; }
+
+    .row { @include make-row; }
+
+    @each $key, $val in $grid-breakpoints {
+        @include respond-to( $key ) {
+            @include make-grid( $key );
+        }
+    }
+}
