@@ -14,8 +14,8 @@ HTML:
 
     <div class="wrapper">
         <header class="header">
-          <div class="logo"><img src="logo.png"/></div>
-          <div class="menu"><nav>...</nav></div>
+            <div class="logo"><img src="logo.png"/></div>
+            <div class="menu"><nav>...</nav></div>
         </header>
     </div>
 
@@ -24,15 +24,15 @@ SCSS:
     .wrapper { @include make-container; }
 
     .header {
-      @include make-row;
+        @include make-row;
 
-      .logo { @include make-columns(12); }
-      .menu { @include make-columns(12); } 
+        .logo { @include make-columns(12); }
+        .menu { @include make-columns(12); } 
 
-      @include respond-to(medium) {
-        .logo { @include make-columns(4); }
-        .menu { @include make-columns(6); }
-      }
+        @include respond-to(medium) {
+            .logo { @include make-columns(4); }
+            .menu { @include make-columns(6); }
+        }
 
     }
 
